@@ -1,7 +1,6 @@
 import express from "express";
 import cors from "cors";
 import enquiryRoutes from "./routes/enquiries.js";
-import cloudinary from "./config/cloudinary.js";
 import { resend } from "./config/resend.js";
 import { errorHandler, notFound } from "./middleware/errorHandler.js";
 
@@ -37,17 +36,6 @@ app.get("/health", (_, res) => {
 });
 
 if (process.env.NODE_ENV !== "production") {
-  app.get("/test-cloudinary", async (_, res, next) => {
-    try {
-      const result = await cloudinary.uploader.upload(
-        "https://res.cloudinary.com/demo/image/upload/sample.jpg"
-      );
-      res.json({ success: true, url: result.secure_url });
-    } catch (error) {
-      next(error);
-    }
-  });
-
   app.get("/test-email", async (_, res, next) => {
     try {
       await resend.emails.send({

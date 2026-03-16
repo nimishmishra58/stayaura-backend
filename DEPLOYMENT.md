@@ -3,6 +3,8 @@
 This backend is a Node.js (Express) API with:
 - Start command: `npm start`
 - Health check endpoint: `GET /health`
+- Multipart enquiry uploads handled in memory only
+- Uploaded images attached to internal email notifications and not stored after sending
 
 ## 1) Required environment variables
 
@@ -10,13 +12,8 @@ Set these on your hosting provider:
 
 - `PORT` (optional on most hosts)
 - `FRONTEND_ORIGIN` (comma-separated list for CORS)
-- `CLOUDINARY_CLOUD_NAME`
-- `CLOUDINARY_API_KEY`
-- `CLOUDINARY_API_SECRET`
 - `RESEND_API_KEY`
 - `ADMIN_EMAIL`
-- `SUPABASE_URL`
-- `SUPABASE_SERVICE_KEY`
 
 You can copy from `.env.example`.
 
@@ -64,4 +61,5 @@ Then open:
 
 - `GET /health` returns `{"success":true,"status":"ok"}`
 - CORS works from your frontend domain(s)
-- Form submission works end-to-end (Cloudinary upload + email delivery)
+- Form submission works end-to-end
+- Uploaded images arrive as email attachments and are not stored after the request completes
