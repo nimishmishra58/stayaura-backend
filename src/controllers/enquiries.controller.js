@@ -45,7 +45,7 @@ export const createEnquiry = async (req, res) => {
 
     // Send email
     await resend.emails.send({
-      from: "StayAura <no-reply@stayaura.com>",
+      from: "StayAura <info@stayaura.com>",
       to: [process.env.ADMIN_EMAIL],
       subject: "New Guaranteed Rent Enquiry",
       html: `

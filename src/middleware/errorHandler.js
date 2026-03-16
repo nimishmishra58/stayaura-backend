@@ -5,8 +5,17 @@ export const notFound = (req, res, next) => {
 };
 
 export const errorHandler = (err, req, res, _next) => {
-  const statusCode = err.statusCode || 500;
-  const message = err.message || "Internal Server Error";
+  let statusCode = err.statusCode || 500;
+  let message = err.message || "Internal Server Error";
+
+  if (err.name === "MulterError") {
+    statusCode = 400;
+    if (err.code === "LIMIT_UNEXPECTED_FILE") {
+      message = "You can upload up to 5 images only.";
+    } else {
+      message = "Invalid upload request.";
+    }
+  }
 
   if (statusCode >= 500) {
     console.error("Unhandled server error:", {

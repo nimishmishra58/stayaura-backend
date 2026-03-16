@@ -6,6 +6,7 @@ import asyncHandler from "../middleware/asyncHandler.js";
 
 const router = express.Router();
 const upload = multer({ storage: multer.memoryStorage() });
+const MAX_IMAGES = 5;
 
 const escapeHtml = (value = "") =>
   String(value)
@@ -23,7 +24,7 @@ const httpError = (statusCode, message) => {
 
 router.post(
   "/",
-  upload.array("images"),
+  upload.array("images", MAX_IMAGES),
   asyncHandler(async (req, res) => {
     const {
       name = "",
