@@ -1,4 +1,3 @@
-import cloudinary from "../config/cloudinary.js";
 import { resend } from "../config/resend.js";
 import { supabase } from "../config/supabase.js";
 
@@ -14,18 +13,7 @@ export const createEnquiry = async (req, res) => {
       postcode,
     } = req.body;
 
-    // Upload images
     const imageUrls = [];
-
-    if (req.files) {
-      for (const file of req.files) {
-        const upload = await cloudinary.uploader.upload(
-          `data:${file.mimetype};base64,${file.buffer.toString("base64")}`,
-          { folder: "stayaura/enquiries" }
-        );
-        imageUrls.push(upload.secure_url);
-      }
-    }
 
     // Save to database
     const { error } = await supabase.from("landlord_enquiries").insert([
