@@ -107,9 +107,26 @@ router.post(
           ${safeNotes ? `<p><strong>Notes:</strong> ${safeNotes}</p>` : ""}
         `;
 
-    const attachmentSummary = attachments.length
-      ? `<p><strong>Image Attachments:</strong> ${attachments.length} file(s) attached to this email only. They are not stored after sending.</p>`
-      : "<p><strong>Image Attachments:</strong> None</p>";
+    const attachmentPreviewHtml = attachments.length
+      ? `
+        <div style="margin-top:18px;">
+          <p><strong>Image Attachments:</strong></p>
+          <div style="display:flex;flex-wrap:wrap;gap:10px;">
+            ${attachments
+              .map(
+                (file) => `
+                  <img
+                    src="data:${file.contentType};base64,${file.content}"
+                    alt="${escapeHtml(file.filename || "Enquiry image")}"
+                    style="width:140px;height:100px;object-fit:cover;border-radius:8px;border:1px solid #e2e8f0;"
+                  />
+                `
+              )
+              .join("")}
+          </div>
+        </div>
+      `
+      : "";
 
     const adminHtml = `
       <div style="font-family:Arial,Helvetica,sans-serif;background:#f8fafc;padding:32px;">
@@ -123,8 +140,7 @@ router.post(
             <p><strong>Email:</strong> ${safeEmail}</p>
             <p><strong>Phone:</strong> ${safePhone}</p>
             ${detailsHtml}
-            ${attachmentSummary}
-            <p><strong>Retention:</strong> Uploaded images were processed in memory for email delivery only and were not stored in Cloudinary, Supabase, or local disk storage.</p>
+            ${attachmentPreviewHtml}
             <div style="margin-top:28px;text-align:center;">
               <a href="mailto:${safeEmail}" style="background:#0f766e;color:#fff;padding:14px 24px;border-radius:8px;text-decoration:none;font-weight:600;display:inline-block;">Reply to ${safeEnquiryType === "landlord" ? "Landlord" : "Guest"}</a>
             </div>
@@ -134,7 +150,7 @@ router.post(
     `;
 
     await resend.emails.send({
-      from: "StayAura <onboarding@resend.dev>",
+      from: "StayAura <info@stayaura.com>",
       to: [process.env.ADMIN_EMAIL],
       replyTo: email,
       subject: adminSubject,
@@ -143,7 +159,7 @@ router.post(
     });
 
     await resend.emails.send({
-      from: "StayAura <onboarding@resend.dev>",
+      from: "StayAura <info@stayaura.com>",
       to: [email],
       subject: "We received your enquiry",
       html: `
@@ -153,9 +169,6 @@ router.post(
             <p style="color:#475569;font-size:15px;line-height:1.6;">
               We have received your ${safeEnquiryType === "landlord" ? "landlord" : "guest"} enquiry.
               Our team will contact you within 24 hours.
-            </p>
-            <p style="color:#475569;font-size:15px;line-height:1.6;">
-              If you uploaded images, they were attached to our internal notification email only and were not stored after sending.
             </p>
             <div style="margin:25px 0;padding:18px;background:#f1f5f9;border-radius:10px;">
               <strong>What happens next?</strong>
@@ -167,7 +180,7 @@ router.post(
             </div>
             <p style="color:#64748b;font-size:14px;">
               StayAura Team<br/>
-              www.stayaura.com
+              www.bookingatstayaura.com
             </p>
           </div>
         </div>
