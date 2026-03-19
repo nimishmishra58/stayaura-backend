@@ -180,7 +180,7 @@ router.post(
             </div>
             <p style="color:#64748b;font-size:14px;">
               StayAura Team<br/>
-              www.bookingatstayaura.com
+              www.stayaura.com
             </p>
           </div>
         </div>
